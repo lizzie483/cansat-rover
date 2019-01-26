@@ -1,71 +1,32 @@
 import math
-from time import sleep
 
-from gpiozero import Motor
+class PIDController():
+    def __init__(self, robot):
+        self.robot = robot
+        self.speed = 10
+        self.kp = 10
+        self.ki = 0.01
+        self.kd = 0.01
+        self.previous_error = 0
+        self.integral_error = 0
 
-from encoder import QuadratureEncoder
+    def control(self, goal):
 
-class Robot():
-    def __init__(self, left_motor_input, right_motor_input):
-        self.x = 0
-        self.y = 0
-        self.w = 0
-        self.left_motor = Motor(left_motor_input[0], left_motor_input[1])
-        self.right_motor = Motor(right_motor_input[0], right_motor_input[1])
+        u_x = goal.x - self.robot.x
+        u_y = goal.y - self.robot.y
 
-    def forward(self, speed = 1):
-        self.left_motor.forward(speed)
-        self.right_motor.forward(speed)
+        goal_theta = math.atan2(u_y, u_x)
 
-    def backward(self, speed = 1):
-        self.left_motor.backward(speed)
-        self.right_motor.backward(speed)
+        u_theta = goal_theta - self.robot.theta
 
-    def stop(self):
-        self.left_motor.stop()
-        self.right_motor.stop()
+        current_error = math.atan2(math.sin(u_theta), math.cos(u_theta))
 
-    def update_position(dx, dy, dw):
-        self.x += dx
-        self.y += dy
-        self.w += dw
+        differential_error = current_error - self.previous_error
+        integral_error = current_error + self.integral_error
 
-    def moveTo(x, y):
-        dx = x - self.x
-        dy = y - self.y
+        self.previous_error = current_error
+        self.integral_error = integral_error
 
-        w = atan2(dy, dx)
+        w = current_error * self.kp + differential_error * self.kd + integral_error * self.ki
 
-   def control(w):
-        error = w
-        d_error = error - previous_w
-        i_error += error
-
-        return kp * error + kd * d_error + ki * i_error        
-    
-
-def main():
-     dt = 1
-
-     LEFT_MOTOR_INPUT = (17, 27)
-     RIGHT_MOTOR_INPUT = (5, 6)
-     
-     LEFT_ENCODER_INPUT = (23, 24)
-     RIGHT_ENCODER_INPUT = (13, 19)
-
-     robot = Robot(LEFT_MOTOR_INPUT, RIGHT_MOTOR_INPUT)
-     left_encoder = QuadratureEncoder(LEFT_ENCODER_INPUT[0], LEFT_ENCODER_INPUT[1])
-     right_encoder = QuadratureEncoder(RIGHT_ENCODER_INPUT[0], RIGHT_ENCODER_INPUT[1])
-
-     robot.forward()
-
-     while(True):
-         print(left_encoder.counter)
-         print(right_encoder.counter)
-         sleep(dt)
-
-if __name__ == '__main__':
-    main()
-
-
-
+        return self.speed, w
