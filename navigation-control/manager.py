@@ -43,6 +43,7 @@ class RoverManager():
         v, w = self.controller.control(self.goal)
 
         left_speed, right_speed = self.unicycle_to_differential(v, w)
+        self.robot.update_speed(left_speed, right_speed)
         self.robot.left_speed = left_speed
         self.robot.right_speed = right_speed
 
