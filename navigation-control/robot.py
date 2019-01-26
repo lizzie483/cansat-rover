@@ -27,7 +27,10 @@ class Robot():
         self.right_motor.backward(speed)
 
     def update_speed(self, left_speed, right_speed):
-        pass
+        self.left_speed = left_speed
+        self.right_speed = right_speed
+        self.left_motor.forward(left_speed)
+        self.right_motor.forward(right_speed)
 
     def stop(self):
         self.left_motor.stop()
