@@ -1,6 +1,8 @@
 from time import sleep
 
 from robot import Robot
+from controller import PIDController
+from manager import RoverManager
 
 def main():
      dt = 1
@@ -12,13 +14,16 @@ def main():
      RIGHT_ENCODER_INPUT = {'hall_sensor_A': 13, 'hall_sensor_B': 19, 'ticks_per_revolution': 2400}
 
      robot = Robot(LEFT_MOTOR_INPUT, RIGHT_MOTOR_INPUT, LEFT_ENCODER_INPUT, RIGHT_ENCODER_INPUT)
+     controller = PIDController(robot)
 
-     robot.forward()
+     goal = {'x': 0 , 'y': 1}
+
+     rover_manager = RoverManager(robot, controller)
+
 
      while(True):
-         print(robot.left_encoder.counter)
-         print(robot.right_encoder.counter)
-         sleep(dt)
+        rover_manager.execute()
+        sleep(dt)
 
 if __name__ == '__main__':
     main()
