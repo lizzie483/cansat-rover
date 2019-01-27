@@ -15,7 +15,7 @@ class RoverManager():
     def update_odometry(self):
 
         left_encoder_ticks = self.robot.left_encoder.counter
-        right_encoder_ticks = self.robot.right_encoder.counter
+        right_encoder_ticks = -self.robot.right_encoder.counter
         left_wheel_distance = self.distance_per_ticks(left_encoder_ticks - self.previous_left_ticks, self.robot.wheel_radius, self.robot.left_encoder.ticks_per_revolution)
         right_wheel_distance = self.distance_per_ticks(right_encoder_ticks - self.previous_right_ticks, self.robot.wheel_radius, self.robot.right_encoder.ticks_per_revolution)
 
@@ -34,8 +34,8 @@ class RoverManager():
         self.previous_right_ticks = right_encoder_ticks
 
     def unicycle_to_differential(self, v, w):
-        left_speed = (2 * v + w * self.robot.wheel_base_length) / (2 * self.robot.wheel_radius)
-        right_speed = (2 * v - w * self.robot.wheel_base_length) / (2 * self.robot.wheel_radius)
+        left_speed = (2 * v - w * self.robot.wheel_base_length) / (2 * self.robot.wheel_radius)
+        right_speed = (2 * v + w * self.robot.wheel_base_length) / (2 * self.robot.wheel_radius)
 
         return left_speed, right_speed
 
