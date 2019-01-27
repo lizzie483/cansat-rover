@@ -13,6 +13,8 @@ class Robot():
         self.wheel_base_length = 0.212
         self.left_wheel_speed = 0
         self.right_wheel_speed = 0
+        self.max_left_speed = 7.48
+        self.max_right_speed = 7.67
         self.left_motor = Motor(left_motor_input[0], left_motor_input[1])
         self.right_motor = Motor(right_motor_input[0], right_motor_input[1])
         self.left_encoder = QuadratureEncoder(left_encoder_input['ticks_per_revolution'], left_encoder_input['hall_sensor_A'], left_encoder_input['hall_sensor_B'])
@@ -29,8 +31,10 @@ class Robot():
     def update_speed(self, left_speed, right_speed):
         self.left_speed = left_speed
         self.right_speed = right_speed
-        self.left_motor.forward(left_speed)
-        self.right_motor.forward(right_speed)
+        print(left_speed)
+        print(right_speed)
+        self.left_motor.forward(left_speed / self.max_left_speed)
+        self.right_motor.forward(right_speed / self.max_right_speed)
 
     def stop(self):
         self.left_motor.stop()
