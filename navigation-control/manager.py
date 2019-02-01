@@ -46,6 +46,23 @@ class RoverManager():
         w = max(min(w, max_w), -max_w)
 
         left_speed, right_speed = self.unicycle_to_differential(v, w)
+
+        if( max(left_speed, right_speed) > self.robot.max_speed ):
+            if left_speed > right_speed:
+                left_speed = self.robot.max_speed
+                right_speed = w * self.robot.wheel_base_length / self.robot.wheel_radius  + left_speed
+            else:
+                right_speed = self.robot.max_speed
+                left_speed = right_speed - w * self.robot.wheel_base_length / self.robot.wheel_radius
+
+        if( min(left_speed, right_speed) < -self.robot.max_speed ):
+            if left_speed < right_speed:
+                left_speed = -self.robot.max_speed
+                right_speed = w * self.robot.wheel_base_length / self.robot.wheel_radius  + left_speed
+            else:
+                right_speed = -self.robot.max_speed
+                left_speed = right_speed - w * self.robot.wheel_base_length / self.robot.wheel_radius
+
         self.robot.update_speed(left_speed, right_speed)
         self.robot.left_speed = left_speed
         self.robot.right_speed = right_speed
