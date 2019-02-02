@@ -9,6 +9,7 @@ class Robot():
         self.wheel_base_length = 0.212
         self.max_left_wheel_speed = 7.48
         self.max_right_wheel_speed = 7.67
+        self.max_speed = 7
         self.left_motor = left_motor
         self.right_motor = right_motor
         self.left_encoder = left_encoder
