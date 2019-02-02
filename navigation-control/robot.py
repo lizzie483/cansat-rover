@@ -9,7 +9,7 @@ class Robot():
         self.wheel_base_length = 0.212
         self.max_left_wheel_speed = 7.48
         self.max_right_wheel_speed = 7.67
-        self.max_speed = 7
+        self.max_speed = 7.48
         self.left_motor = left_motor
         self.right_motor = right_motor
         self.left_encoder = left_encoder
@@ -26,8 +26,14 @@ class Robot():
     def update_speed(self, left_wheel_speed, right_wheel_speed):
         left_speed = left_wheel_speed / self.max_left_wheel_speed
         right_speed = right_wheel_speed / self.max_right_wheel_speed
-        self.left_motor.forward(left_speed)
-        self.right_motor.forward(right_speed)
+        if left_speed < 0:
+            self.left_motor.backward(-left_speed)
+        else:
+            self.left_motor.forward(left_speed)
+        if right_speed < 0:
+            self.right_motor.backward(-right_speed)
+        else:
+            self.right_motor.forward(right_speed)
 
     def stop(self):
         self.left_motor.stop()
